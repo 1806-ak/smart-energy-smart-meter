@@ -1,8 +1,8 @@
-# Smart Energy Smart Meter – Presentation Slide Deck
+# Smart Energy Smart-Meter Pulse Counter & Analytics Agent – Presentation Slide Deck
 
 ## Slide 1: Title Slide
 
-- **Title:** Smart Energy Smart Meter
+- **Title:** Smart Energy Smart-Meter Pulse Counter & Analytics Agent
 - **Subtitle:** Pulse Counter, Energy Monitoring & Analytics using Linux
 - **Presenter:** Ankit Kumar
 - **GitHub:** https://github.com/1806-ak/smart-energy-smart-meter
