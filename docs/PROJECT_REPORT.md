@@ -1,9 +1,9 @@
-# Smart Energy Smart Meter – Pulse Counter & Analytics
+# Smart Energy Smart-Meter Pulse Counter & Analytics Agent – Pulse Counter & Analytics
 
 ## Comprehensive Project Report
 
 **Presenter:** Ankit Kumar  
-**Project:** Smart Energy Smart Meter  
+**Project:** Smart Energy Smart-Meter Pulse Counter & Analytics Agent  
 **GitHub Repository:** https://github.com/1806-ak/smart-energy-smart-meter
 
 ---
@@ -12,13 +12,13 @@
 
 ## 1.1 Project Title
 
-**Smart Energy Smart Meter – Pulse Counter and Analytics Agents with Linux System Programming**
+**Smart Energy Smart-Meter Pulse Counter & Analytics Agent – Pulse Counter and Analytics Agents with Linux System Programming**
 
 ## 1.2 Problem Statement
 
 Traditional energy meters provide limited real-time visibility into electricity consumption. Manual meter readings make it difficult to continuously monitor power usage, identify sudden increases in load, and analyze energy consumption.
 
-The Smart Energy Smart Meter project provides a Linux-based prototype for pulse-based energy monitoring. The system receives meter pulses, processes them using a modular C++ application, calculates power and energy values, monitors load conditions, records meter data, and provides analytics.
+The Smart Energy Smart-Meter Pulse Counter & Analytics Agent project provides a Linux-based prototype for pulse-based energy monitoring. The system receives meter pulses, processes them using a modular C++ application, calculates power and energy values, monitors load conditions, records meter data, and provides analytics.
 
 The project also demonstrates Linux system programming through a character-device driver that provides communication between the Linux kernel and a userspace test application.
 
@@ -307,7 +307,7 @@ SmartMeter: Device closed
 Therefore, the Linux character-device communication and pulse-counting path were successfully demonstrated.
 STAGE 6: CONCLUSION & FUTURE SCOPE
 6.1 Conclusion
-The Smart Energy Smart Meter project demonstrates a Linux-based smart-meter prototype combining a modular C++ application with a Linux character-device driver.
+The Smart Energy Smart-Meter Pulse Counter & Analytics Agent project demonstrates a Linux-based smart-meter prototype combining a modular C++ application with a Linux character-device driver.
 The project includes:
 - Pulse counting
 - Pulse simulation
@@ -405,11 +405,11 @@ SmartMeterProject-main/
 └── .gitignore
 
 GITHUB REPOSITORY
-Repository: Smart Energy Smart Meter
+Repository: Smart Energy Smart-Meter Pulse Counter & Analytics Agent
 GitHub: https://github.com/1806-ak/smart-energy-smart-meter
 Presenter: Ankit Kumar
 FINAL SUMMARY
-The Smart Energy Smart Meter project demonstrates how Linux system programming, C++, pulse processing, energy calculation, analytics, and kernel-level device communication can be combined to create a smart-meter monitoring prototype.
+The Smart Energy Smart-Meter Pulse Counter & Analytics Agent project demonstrates how Linux system programming, C++, pulse processing, energy calculation, analytics, and kernel-level device communication can be combined to create a smart-meter monitoring prototype.
 The project was successfully built and executed in a Linux environment, and the Linux character-device driver was successfully verified using the driver test application.
 The project is structured into independent modules, making it suitable for future development, testing, hardware integration, and embedded Linux deployment.
 Project Highlights
