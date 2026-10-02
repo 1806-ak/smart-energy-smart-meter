@@ -1,272 +1,199 @@
-# Smart Energy Smart Meter – Pulse Counter & Analytics Agents
+# Smart Energy Smart-Meter Pulse Counter & Analytics Agent
 
-[![Build & Tests](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
-[![C++ Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg)]()
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20WSL-orange.svg)]()
-[![License](https://img.shields.io/badge/license-MIT-green.svg)]()
+![Build](https://img.shields.io/badge/Build-CMake%20%2B%20g%2B%2B-blue)
+![Language](https://img.shields.io/badge/C%2B%2B-C%2B%2B17-blue)
+![Platform](https://img.shields.io/badge/Platform-Linux-green)
+![License](https://img.shields.io/badge/License-Educational-lightgrey)
 
-A Linux-based smart energy meter simulation and real-time energy analytics system developed in modern C++ (C++17). The project integrates multi-threading, POSIX signal handling, real-time pulse processing, energy consumption calculations, automated alert management, and analytics reporting.
+A Linux-based smart energy meter prototype developed using C++17 and C.
 
----
+The project demonstrates pulse counting, pulse simulation, energy and power calculation, alert management, analytics, data logging, and Linux character-device communication.
 
 ## 📋 Table of Contents
-1. [Project Overview & Problem Statement](#project-overview--problem-statement)
-2. [Objectives & Scope](#objectives--scope)
-3. [Key Features](#key-features)
-4. [System Architecture](#system-architecture)
-5. [UML Diagrams](#uml-diagrams)
-   - [Class Diagram](#class-diagram)
-   - [Sequence Diagram](#sequence-diagram)
-   - [State Machine Diagram](#state-machine-diagram)
-6. [Linux System Programming Concepts](#linux-system-programming-concepts)
-7. [Directory Structure](#directory-structure)
-8. [Build and Execution Guide](#build-and-execution-guide)
-9. [Test Suite & Verification](#test-suite--verification)
-10. [Deliverables Checklist](#deliverables-checklist)
+
+- [Project Overview](#-project-overview)
+- [Objectives](#-objectives)
+- [Key Features](#️-key-features)
+- [System Architecture](#️-system-architecture)
+- [Core Modules](#-core-modules)
+- [Linux System Programming](#-linux-system-programming)
+- [Directory Structure](#-directory-structure)
+- [Build and Execution](#-build-and-execution)
+- [Testing and Verification](#-testing-and-verification)
+- [Future Scope](#-future-scope)
+- [Repository](#-repository)
 
 ---
 
-## ⚡ Project Overview & Problem Statement
+# ⚡ Project Overview
 
-### Problem Statement
-Traditional energy meters require manual meter readings, lack real-time visibility into instantaneous power surges, provide no immediate warning mechanisms during dangerous overload conditions, and cannot detect anomalies or power tampering at the edge.
+## Problem Statement
 
-### Solution
-This project implements a software-defined **Smart Energy Smart Meter** running on Linux that:
-1. Simulates and counts optical high-frequency pulses from an electric meter LED (e.g., $1000\text{ imp/kWh}$).
-2. Calculates instantaneous active power ($\text{kW}$), cumulative energy ($\text{kWh}$), and real-time utility bills.
-3. Evaluates power thresholds using an **Alert Manager** to flag overload surges and tampering.
-4. Executes continuous statistical tracking through an **Analytics Agent** (peak load, average load, anomaly timestamps).
-5. Persists time-stamped metrics to a persistent CSV log (`meter_log.csv`).
-6. Uses Linux system programming (multi-threading, POSIX signals for graceful teardown, and character device concepts).
+Traditional energy meters provide limited software-level visibility into real-time energy consumption.
 
----
+It can be difficult to continuously monitor meter pulses, calculate instantaneous power, track energy consumption, and identify high-power conditions.
 
-## 🎯 Objectives & Scope
+## Solution
 
-- **Real-Time Pulse Acquisition:** Capture hardware-generated or simulated pulses concurrently without losing count using thread-safe primitives.
-- **Accurate Energy Metering:** Convert raw pulses to kilowatt-hours ($\text{kWh}$) and active power ($\text{kW}$) using configurable meter constants.
-- **Edge Analytics & Safety Alerts:** Detect and warn about over-consumption ($>5.0\text{ kW}$) or sudden surges within seconds.
-- **Robust Linux Architecture:** Clean multi-threaded architecture with POSIX signal handlers (`SIGINT`, `SIGTERM`) for safe shutdown and log flushing.
+The **Smart Energy Smart-Meter Pulse Counter & Analytics Agent** provides a Linux-based prototype that:
 
----
-
-## 🛠️ Key Features
-
-- **Thread-Safe Pulse Counter:** Lockless atomic counter (`std::atomic<uint64_t>`) with delta tracking for high-frequency pulse inputs.
-- **Configurable Pulse Simulator:** Simulates real-world household and industrial loads with speedup acceleration for rapid demonstration.
-- **Energy & Billing Calculator:** Real-time computation of power, energy consumption, and tiered billing costs.
-- **Real-time Alert Manager:** Threshold monitoring detecting overload conditions and abnormal load jumps.
-- **Analytics Agent:** Computes minimum, maximum/peak, and session averages, generating structured summary reports.
-- **Structured File Logger:** Appends formatted CSV metrics and event logs with microsecond/second precision.
-- **Linux Character Device Driver Concept:** Includes `driver/pulse_driver.c` demonstrating kernel-to-userspace character device architecture (`/dev/smart_meter_pulse`).
+- Generates or receives meter pulses.
+- Counts pulses using a dedicated pulse counter.
+- Calculates energy consumption.
+- Calculates power from pulse timing.
+- Monitors power conditions.
+- Generates alerts.
+- Performs usage analytics.
+- Logs meter information.
+- Demonstrates Linux character-device communication.
 
 ---
 
-## 🏗️ System Architecture
+# 🎯 Objectives
 
-```mermaid
-flowchart TD
-    subgraph Hardware_or_Simulation ["Input Layer"]
-        PS["Pulse Simulator Thread\n(Simulates load in kW)"]
-        KD["Linux Kernel Driver Concept\n(/dev/smart_meter_pulse)"]
-    end
+The main objectives of the project are:
 
-    subgraph Core_Engine ["Smart Meter Core Engine"]
-        PC["Pulse Counter\n(std::atomic<uint64_t>)"]
-        EC["Energy Calculator\n(kWh, kW, Cost)"]
-    end
-
-    subgraph Analytics_Layer ["Analytics & Safety Layer"]
-        AA["Analytics Agent\n(Peak, Average, Trends)"]
-        AM["Alert Manager\n(Threshold & Surge Check)"]
-    end
-
-    subgraph Output_Layer ["Output & Persistence"]
-        DL["Data Logger\n(meter_log.csv)"]
-        CLI["Terminal Dashboard\n& Summary Report"]
-    end
-
-    PS -->|Increments| PC
-    KD -.->|Character read| PC
-    PC -->|Delta Pulses| EC
-    EC -->|Power & Energy| AA
-    EC -->|Power & Energy| AM
-    AM -->|Alert Events| DL
-    AA -->|Metrics| DL
-    AA -->|Summary| CLI
-    AM -->|Live Warnings| CLI
-```
+- Real-time pulse acquisition.
+- Accurate pulse-based energy calculation.
+- Instantaneous power calculation.
+- Simulation of different load conditions.
+- High-power condition monitoring.
+- Data logging.
+- Energy usage analytics.
+- Linux kernel and userspace communication.
+- Modular and maintainable software architecture.
 
 ---
 
-## 📊 UML Diagrams
+# 🛠️ Key Features
 
-### Class Diagram
-```mermaid
-classDiagram
-    class PulseCounter {
-        -std::atomic~uint64_t~ totalPulses
-        -std::atomic~uint64_t~ deltaPulses
-        +PulseCounter()
-        +increment(uint64_t count) void
-        +getCount() uint64_t
-        +reset() void
-        +getAndResetDelta() uint64_t
-    }
+## 1. Pulse Counter
 
-    class PulseSimulator {
-        -PulseCounter& counter
-        -double meterConstant
-        -double timeAcceleration
-        -std::atomic~double~ currentLoadKW
-        -std::atomic~bool~ running
-        -std::thread workerThread
-        +PulseSimulator(counter, meterConstant, accel)
-        +start(double initialLoadKW) void
-        +setLoad(double loadKW) void
-        +stop() void
-        +injectPulses(uint64_t count) void
-    }
+The `PulseCounter` module maintains and processes the meter pulse count.
 
-    class EnergyCalculator {
-        -double meterConstant
-        -double tariffRate
-        +EnergyCalculator(meterConstant, tariffRate)
-        +calculateEnergyKWh(uint64_t pulses) double
-        +calculatePowerKW(uint64_t deltaPulses, double deltaSeconds) double
-        +calculateCost(double energyKWh) double
-    }
+## 2. Pulse Simulator
 
-    class AlertManager {
-        -double maxAllowedPowerKW
-        -double surgeThresholdKW
-        -std::vector~AlertRecord~ history
-        +evaluate(double currentPower, double prevPower) vector~AlertRecord~
-        +triggerTamperAlert(string details) void
-        +getAlertHistory() vector~AlertRecord~
-    }
+The `PulseSimulator` module generates simulated meter pulses for software-based testing and demonstration.
 
-    class AnalyticsAgent {
-        -std::vector~ConsumptionSample~ samples
-        -double peakPowerKW
-        -double minPowerKW
-        -double sumPowerKW
-        +recordSample(timestamp, powerKW, energyKWh) void
-        +getPeakPowerKW() double
-        +getAveragePowerKW() double
-        +generateSummaryReport(cost, currency) string
-    }
+## 3. Energy Calculator
 
-    class DataLogger {
-        -std::string filename
-        -std::mutex fileMutex
-        +logMeasurement(timestamp, pulses, kWh, kW, bill, status) void
-        +logEvent(timestamp, eventType, message) void
-    }
+The `EnergyCalculator` module calculates:
 
-    PulseSimulator --> PulseCounter : updates
-    PulseCounter <.. EnergyCalculator : queries pulses
-    EnergyCalculator --> AnalyticsAgent : supplies metrics
-    EnergyCalculator --> AlertManager : supplies power data
-    AnalyticsAgent --> DataLogger : logs samples
-    AlertManager --> DataLogger : logs alerts
-```
+- Energy consumption.
+- Instantaneous power.
+- Power-related measurements.
 
-### Sequence Diagram
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User
-    participant Main as Main Program
-    participant Sim as PulseSimulator
-    participant Ctr as PulseCounter
-    participant Calc as EnergyCalculator
-    participant Alert as AlertManager
-    participant Agent as AnalyticsAgent
-    participant Log as DataLogger
-
-    User->>Main: Launch (./bin/SmartMeter)
-    Main->>Sim: start(2.0 kW)
-    loop Background Pulse Generation
-        Sim->>Ctr: increment(1)
-    end
-
-    loop Every 1 Second Monitoring
-        Main->>Ctr: getAndResetDelta()
-        Ctr-->>Main: deltaPulses
-        Main->>Calc: calculatePowerKW(deltaPulses, dt)
-        Calc-->>Main: currentPowerKW
-        Main->>Calc: calculateEnergyKWh(totalPulses)
-        Calc-->>Main: energyKWh
-        Main->>Alert: evaluate(currentPower, prevPower)
-        alt Threshold Exceeded
-            Alert-->>Main: AlertRecord (CRITICAL/WARNING)
-            Main->>Log: logEvent(Alert)
-            Main->>User: Display Console Warning
-        end
-        Main->>Agent: recordSample(power, energy)
-        Main->>Log: logMeasurement(...)
-        Main->>User: Print Dashboard Row
-    end
-
-    User->>Main: Press Ctrl+C (SIGINT)
-    Main->>Sim: stop()
-    Main->>Agent: generateSummaryReport()
-    Agent-->>User: Print Final Analytics Report
-```
-
-### State Machine Diagram
-```mermaid
-stateDiagram-v2
-    [*] --> INITIALIZING : System Boot
-    INITIALIZING --> MONITORING : Threads & Devices Started
-    
-    state MONITORING {
-        [*] --> NORMAL_CONSUMPTION
-        NORMAL_CONSUMPTION --> SURGE_DETECTED : Delta Power >= Surge Threshold
-        SURGE_DETECTED --> NORMAL_CONSUMPTION : Power Stabilizes
-        NORMAL_CONSUMPTION --> OVERLOAD_ALERT : Power > Max Allowed Threshold
-        OVERLOAD_ALERT --> NORMAL_CONSUMPTION : Load Reduced Below Threshold
-    }
-
-    MONITORING --> SHUTTING_DOWN : SIGINT (Ctrl+C) / SIGTERM
-    SHUTTING_DOWN --> FINAL_REPORT : Flush Logs & Stop Threads
-    FINAL_REPORT --> [*] : Safe Exit (Code 0)
-```
-
----
-
-## 🐧 Linux System Programming Concepts
-
-1. **Multithreading (`std::thread`, `pthreads`):** Concurrent producer-consumer pattern. The simulation thread generates pulses asynchronously while the main thread performs periodic calculations and logging.
-2. **POSIX Signals (`signal(SIGINT)`, `signal(SIGTERM)`):** Safe signal interception ensures file handles are flushed and background threads are joined before process exit.
-3. **Atomic Operations (`std::atomic`):** Lockless, atomic pulse accumulation avoiding race conditions across threads.
-4. **Linux Character Device Driver Concept (`driver/pulse_driver.c`):** Demonstrates registering `/dev/smart_meter_pulse` using `alloc_chrdev_region`, `cdev_add`, and standard `file_operations` (`open`, `read`, `write`, `release`).
-
----
-
-## 📁 Directory Structure
+The project uses a calibration constant of:
 
 ```text
-SmartMeterProject/
-├── .gitignore               # Ignores build/, bin/, logs
-├── CMakeLists.txt           # Modern CMake configuration (builds app & tests)
-├── README.md                # Comprehensive documentation and UML
-├── bin/                     # Generated executables (SmartMeter, TestSmartMeter)
-├── build/                   # CMake build directory
-├── driver/                  # Linux Kernel Device Driver concept
-│   ├── Kbuild               # Kernel build descriptor
-│   ├── Makefile             # Kernel module compilation Makefile
-│   └── pulse_driver.c       # Character device driver implementation
-├── include/                 # Header files
+3200 impulses/kWh
+
+Energy calculation:
+Energy (kWh) = Number of Pulses / 3200
+
+For example:
+320 pulses / 3200 = 0.1000 kWh
+
+4. Alert Manager
+The AlertManager monitors power conditions and generates alerts when configured conditions are detected.
+5. Analytics
+The Analytics module processes meter readings and calculates useful usage statistics.
+Examples include:
+- Minimum power.
+- Maximum/peak power.
+- Average power.
+- Energy consumption.
+- Session statistics.
+6. Data Logger
+The DataLogger module stores meter readings for later analysis.
+🏗️ System Architecture
+                    Pulse Input
+                        │
+             ┌──────────┴──────────┐
+             │                     │
+     Pulse Simulator       Linux Character
+                             Device Driver
+             │                     │
+             └──────────┬──────────┘
+                        │
+                        ▼
+                 ┌──────────────┐
+                 │ PulseCounter │
+                 └──────┬───────┘
+                        │
+                        ▼
+               ┌─────────────────┐
+               │ EnergyCalculator│
+               └────────┬────────┘
+                        │
+              ┌─────────┴─────────┐
+              │                   │
+              ▼                   ▼
+       ┌─────────────┐     ┌────────────┐
+       │ AlertManager│     │  Analytics │
+       └──────┬──────┘     └─────┬──────┘
+              │                  │
+              └────────┬─────────┘
+                       ▼
+                ┌────────────┐
+                │ DataLogger │
+                └────────────┘
+
+📦 Core Modules
+Module	Purpose
+PulseCounter	Maintains and processes pulse counts
+PulseSimulator	Generates simulated meter pulses
+EnergyCalculator	Calculates power and energy
+AlertManager	Monitors power conditions
+Analytics	Generates usage statistics
+DataLogger	Stores meter readings
+pulse_driver.c	Linux character-device driver
+driver_test.cpp	Userspace driver test
+
+
+🐧 Linux System Programming
+The project demonstrates several Linux system-programming concepts.
+Multithreading
+The C++ application uses threading concepts for asynchronous pulse generation and monitoring.
+Atomic Operations
+Atomic operations are used for safe pulse-count processing in concurrent execution.
+POSIX Signals
+Linux signal handling is used for controlled application termination, including:
+SIGINT
+
+which can be generated using:
+Ctrl+C
+
+Linux Character Device
+The project includes:
+driver/pulse_driver.c
+
+which demonstrates Linux character-device programming.
+The userspace test application is:
+driver/driver_test.cpp
+
+The driver build files are:
+driver/Makefile
+driver/Kbuild
+
+📁 Directory Structure
+SmartMeterProject-main/
+│
+├── driver/
+│   ├── Kbuild
+│   ├── Makefile
+│   ├── driver_test.cpp
+│   └── pulse_driver.c
+│
+├── include/
 │   ├── AlertManager.h
 │   ├── Analytics.h
 │   ├── DataLogger.h
 │   ├── EnergyCalculator.h
 │   ├── PulseCounter.h
 │   └── PulseSimulator.h
-├── src/                     # C++ Source implementations
+│
+├── src/
 │   ├── AlertManager.cpp
 │   ├── Analytics.cpp
 │   ├── DataLogger.cpp
@@ -274,83 +201,148 @@ SmartMeterProject/
 │   ├── PulseCounter.cpp
 │   ├── PulseSimulator.cpp
 │   └── main.cpp
-└── tests/                   # Automated Unit Tests
-    └── test_meter.cpp
-```
+│
+├── tests/
+│   └── test_meter.cpp
+│
+├── docs/
+│   ├── PRESENTATION_SLIDES.md
+│   └── PROJECT_REPORT.md
+│
+├── CMakeLists.txt
+├── README.md
+└── .gitignore
 
----
-
-## 🚀 Build and Execution Guide
-
-### Prerequisites
-- GCC / G++ (v8.0+ supporting C++17)
-- CMake (v3.10+)
-- Linux (Ubuntu/Debian) or WSL 2 (Windows Subsystem for Linux)
+🚀 Build and Execution
+Prerequisites
+The project requires:
+- Linux / Ubuntu
+- GCC / G++
+- C++17 support
+- CMake
 - Make
-
-### 1. Build the Project
-In your Linux / WSL terminal:
-```bash
-# Configure build with CMake
+1. Configure the Project
+From the project directory:
 cmake -B build
 
-# Compile all executables
+2. Build the Project
 cmake --build build
-```
 
-### 2. Run the Main Smart Meter
-To run the interactive continuous monitoring (press `Ctrl+C` to stop):
-```bash
+3. Run the Application
+After successful compilation, run the generated application according to the executable produced by the CMake configuration.
+For example:
 ./bin/SmartMeter
-```
 
-To run the automated **15-cycle demo mode** (includes load surge & overload events):
-```bash
-./bin/SmartMeter --demo
-```
+If the executable is generated in another location, use the path shown by the CMake build output.
+4. Stop the Application
+Use:
+Ctrl+C
 
-### 3. Inspect Logged Data
-Review real-time CSV logged measurements:
-```bash
-cat meter_log.csv
-```
+to send SIGINT and safely terminate the application.
+🧪 Testing and Verification
+The project contains application tests in:
+tests/test_meter.cpp
 
----
+The Linux driver also includes a userspace test application:
+driver/driver_test.cpp
 
-## 🧪 Test Suite & Verification
+Driver Test
+The driver test can be executed using:
+sudo ./driver_test
 
-Run the automated test runner:
-```bash
-./bin/TestSmartMeter
-```
+An observed test result was:
+Driver pulse count: 3
 
-### Output:
-```text
-=====================================
-   SMART METER SUITE: UNIT TESTS     
-=====================================
-[TEST] Running PulseCounter tests... PASSED!
-[TEST] Running EnergyCalculator tests... PASSED!
-[TEST] Running AlertManager tests... PASSED!
-[TEST] Running AnalyticsAgent tests... PASSED!
+Kernel Log Verification
+Kernel messages can be inspected using:
+sudo dmesg | tail -10
 
-All 4 Test Suites Passed Successfully! (100% OK)
-```
+Observed driver messages included:
+SmartMeter: Device opened
+SmartMeter: Pulse received by driver! Total: 3
+SmartMeter: Device closed
 
----
+This demonstrates the communication sequence:
+Userspace Application
+        ↓
+Device Open
+        ↓
+Pulse Processing
+        ↓
+Pulse Count
+        ↓
+Device Close
 
-## ✅ Deliverables Checklist (Stages 1 – 6)
+✅ Verification Summary
+Component	Status
+C++ application	Implemented
+PulseCounter	Implemented
+PulseSimulator	Implemented
+EnergyCalculator	Implemented
+AlertManager	Implemented
+Analytics	Implemented
+DataLogger	Implemented
+Linux character driver	Implemented
+Driver test	Verified
+Pulse communication	Verified
+Project documentation	Available
+GitHub repository	Published
 
-- [x] **Working C++ Project:** Clean C++17 modular architecture.
-- [x] **Linux Implementation:** Runs natively on Linux and WSL.
-- [x] **g++ Compilation:** Successfully builds via CMake + g++.
-- [x] **Pulse Simulator:** Simulates real-time electrical pulses with configurable power levels.
-- [x] **Pulse Counter:** Thread-safe atomic counter with delta acquisition.
-- [x] **Energy Calculator:** Computes active power ($\text{kW}$), energy ($\text{kWh}$), and tariffs.
-- [x] **Data Logger:** Persists formatted CSV logs and event histories.
-- [x] **Analytics Agent:** Computes peak power, average consumption, and analytical summary.
-- [x] **Alert System:** Detects overloads, surges, and alerts.
-- [x] **Linux System Programming:** Multithreading, POSIX signals, atomic memory ordering, and character driver concept.
-- [x] **UML Diagrams:** Class, Sequence, and State Machine diagrams included.
-- [x] **Unit Tests:** Comprehensive automated test suite passing 100%.
-- [x] **Clean GitHub Repository:** Configured `.gitignore` and clean tree.
+
+🔮 Future Scope
+The project can be extended in several ways.
+Real Energy Meter Integration
+Connect the software to a physical energy meter that provides pulse output.
+Embedded Linux
+Deploy the system on platforms such as:
+- Raspberry Pi
+- BeagleBone
+- Other embedded Linux systems
+Cloud Integration
+Add MQTT or another communication protocol to send meter readings to a cloud service.
+Web Dashboard
+Develop a web interface displaying:
+- Current power.
+- Energy consumption.
+- Historical usage.
+- Peak load.
+- Alerts.
+Advanced Analytics
+Future analytics can include:
+- Daily consumption.
+- Weekly consumption.
+- Monthly consumption.
+- Peak-hour analysis.
+- Consumption forecasting.
+Notifications
+The alert system can be extended to support:
+- Email notifications.
+- Mobile notifications.
+- Web dashboard alerts.
+- MQTT-based notifications.
+📄 Project Documentation
+Detailed documentation is available in the docs/ directory.
+Project Report
+docs/PROJECT_REPORT.md
+
+Presentation Slides
+docs/PRESENTATION_SLIDES.md
+
+👨‍💻 Project Information
+Project Name:
+Smart Energy Smart-Meter Pulse Counter & Analytics Agent
+Presenter:
+Ankit Kumar
+Platform:
+Linux
+Technologies:
+C++17, C, Linux System Programming, CMake
+🔗 Repository
+GitHub:
+https://github.com/1806-ak/smart-energy-smart-meter
+📌 Final Summary
+The Smart Energy Smart-Meter Pulse Counter & Analytics Agent demonstrates how C++, Linux system programming, pulse processing, energy calculation, analytics, data logging, and Linux character-device communication can be combined to create a smart-meter monitoring prototype.
+The project follows a modular architecture and separates pulse acquisition, calculation, monitoring, analytics, and persistence into independent components.
+The project also includes a Linux character-device driver and a userspace driver test application, providing a practical demonstration of kernel-to-userspace communication.
+The modular structure makes the project suitable for further development, testing, hardware integration, and embedded Linux deployment.
+Thank You
